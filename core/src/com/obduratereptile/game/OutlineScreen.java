@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -35,6 +37,9 @@ public class OutlineScreen implements Screen {
     public SpriteBatch batch;
 
     public static final float MAX_BLUR = 2f;
+    public static final int PAD = 0;
+
+    public Rectangle rect = new Rectangle();
 
     public OrthographicCamera cam, cam2;
     public InputMultiplexer inputControllerMultiplexer;
@@ -72,6 +77,7 @@ public class OutlineScreen implements Screen {
     public void create() {
         tex = new Texture(Gdx.files.internal("images/testImage.png"));
         tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Gdx.app.error("debug", "Image size = (" + tex.getWidth() + ", " + tex.getHeight() + ")");
 
         //important since we aren't using some uniforms and attributes that SpriteBatch expects
         ShaderProgram.pedantic = false;
@@ -92,17 +98,17 @@ public class OutlineScreen implements Screen {
         shader.begin();
         shader.setUniformf("dir", 0f, 0f);
 //        shader.setUniformf("resolution", FBO_SIZE);
-        shader.setUniformf("width", tex.getWidth());
-        shader.setUniformf("height", tex.getHeight());
+        shader.setUniformf("width", tex.getWidth() + 2*PAD);
+        shader.setUniformf("height", tex.getHeight() + 2*PAD);
         shader.setUniformf("radius", 1f);
         shader.setUniformf("color", new Vector3(1.0f, 1.0f, 1.0f));
         shader.end();
 
-        blurTargetA = new FrameBuffer(RGBA8888, tex.getWidth(), tex.getHeight(), false);
-        blurTargetB = new FrameBuffer(RGBA8888, tex.getWidth(), tex.getHeight(), false);
-        fboRegionA = new TextureRegion(blurTargetA.getColorBufferTexture(), tex.getWidth(), tex.getHeight());
+        blurTargetA = new FrameBuffer(RGBA8888, tex.getWidth() + 2*PAD, tex.getHeight() + 2*PAD, false);
+        blurTargetB = new FrameBuffer(RGBA8888, tex.getWidth() + 2*PAD, tex.getHeight() + 2*PAD, false);
+        fboRegionA = new TextureRegion(blurTargetA.getColorBufferTexture(), tex.getWidth() + 2*PAD, tex.getHeight() + 2*PAD);
         fboRegionA.flip(false, true);
-        fboRegionB = new TextureRegion(blurTargetB.getColorBufferTexture(), tex.getWidth(), tex.getHeight());
+        fboRegionB = new TextureRegion(blurTargetB.getColorBufferTexture(), tex.getWidth() + 2*PAD, tex.getHeight() + 2*PAD);
         fboRegionB.flip(false, true);
    }
 
@@ -124,16 +130,28 @@ public class OutlineScreen implements Screen {
         batch.setShader(shader);
         resizeBatch(tex.getWidth(), tex.getHeight());
 
+        // draw from tex to FBO A
+        blurTargetA.begin();
+        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(tex, PAD, PAD);
+        batch.end();
+        batch.flush();
+        blurTargetA.end();
+
         // setup edgedetection
         shader.begin();
         shader.setUniformi("edgedetect", 1);
         shader.setUniformf("radius", 5f);
         shader.end();
 
-        // draw from tex to FBO B
+        // draw from FBO A to FBO B
         blurTargetB.begin();
+        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(tex,0,0);
+        batch.draw(fboRegionA,0,0);
         batch.end();
         batch.flush();
         blurTargetB.end();
@@ -148,6 +166,8 @@ public class OutlineScreen implements Screen {
 
         // draw from FBO B to FBO A
         blurTargetA.begin();
+        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(fboRegionB,0,0);
 //        batch.draw(tex,0,0);
@@ -164,6 +184,8 @@ public class OutlineScreen implements Screen {
 
         // draw from FBO A to FBO B
         blurTargetB.begin();
+        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(fboRegionA,0,0);
         batch.end();
@@ -179,6 +201,22 @@ public class OutlineScreen implements Screen {
         batch.begin();
         batch.draw(fboRegionB, 100, 100);
         batch.end();
+
+        game.shapeRenderer.setProjectionMatrix(cam.combined);
+
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        game.shapeRenderer.setColor(0,0,1,1);
+        rect.setPosition(100,100);
+        rect.setSize(tex.getWidth()+2*PAD, tex.getHeight()+2*PAD);
+        game.shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+
+        game.shapeRenderer.setColor(1,1,0,1);
+        rect.setPosition(100+PAD, 100+PAD);
+        rect.setSize(tex.getWidth(), tex.getHeight());
+        game.shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+
+        game.shapeRenderer.end();
 
         stage.draw();
     }
