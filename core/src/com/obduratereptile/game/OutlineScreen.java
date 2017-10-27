@@ -30,10 +30,9 @@ public class OutlineScreen implements Screen {
 //    public Texture tex2;
     public ShaderProgram shader;
     public FrameBuffer blurTargetA, blurTargetB;
-    public TextureRegion fboRegion;
+    public TextureRegion fboRegionA, fboRegionB;
     public SpriteBatch batch;
 
-    public static final int FBO_SIZE = 1024;
     public static final float MAX_BLUR = 2f;
 
     public OrthographicCamera cam, cam2;
@@ -99,8 +98,10 @@ public class OutlineScreen implements Screen {
 
         blurTargetA = new FrameBuffer(RGBA8888, tex.getWidth(), tex.getHeight(), false);
         blurTargetB = new FrameBuffer(RGBA8888, tex.getWidth(), tex.getHeight(), false);
-        fboRegion = new TextureRegion(blurTargetA.getColorBufferTexture(), tex.getWidth(), tex.getHeight());
-        fboRegion.flip(false, true);
+        fboRegionA = new TextureRegion(blurTargetA.getColorBufferTexture(), tex.getWidth(), tex.getHeight());
+        fboRegionA.flip(false, true);
+        fboRegionB = new TextureRegion(blurTargetB.getColorBufferTexture(), tex.getWidth(), tex.getHeight());
+        fboRegionB.flip(false, true);
    }
 
     @Override
@@ -118,12 +119,15 @@ public class OutlineScreen implements Screen {
         cam.update();
         cam2.update();
 
-//        // The orthoGestureController works with this
-//        game.batch.begin();
-//        game.batch.draw(tex, 100, 100);
-//        game.batch.end();
+        // setup H-blur
+        batch.setShader(shader);
+        shader.begin();
+        shader.setUniformf("dir", 1f, 0f);
+        float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
+        shader.setUniformf("radius", mouseXAmt * MAX_BLUR);
+        shader.end();
 
-        // debug: let's just draw to texture, then draw to the screen
+        // draw from tex to FBO A
         resizeBatch(tex.getWidth(), tex.getHeight());
         blurTargetA.begin();
         batch.begin();
@@ -132,10 +136,29 @@ public class OutlineScreen implements Screen {
         batch.flush();
         blurTargetA.end();
 
+        // setup V-blur
+        shader.begin();
+        shader.setUniformf("dir", 0f, 1f);
+        float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
+        shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
+        shader.end();
+
+        // draw from FBO A to FBO B
+        blurTargetB.begin();
+        batch.begin();
+        batch.draw(fboRegionA,0,0);
+        batch.end();
+        batch.flush();
+        blurTargetB.end();
+
+        // use the default shader
+        batch.setShader(null);
+
+        // draw from FBO B to screen
         batch.setProjectionMatrix(cam.combined);
 
         batch.begin();
-        batch.draw(fboRegion, 100, 100);
+        batch.draw(fboRegionB, 100, 100);
         batch.end();
 
         // TODO: make orthoGestureController work with this code
