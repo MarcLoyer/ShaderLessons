@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -94,6 +95,7 @@ public class OutlineScreen implements Screen {
         shader.setUniformf("width", tex.getWidth());
         shader.setUniformf("height", tex.getHeight());
         shader.setUniformf("radius", 1f);
+        shader.setUniformf("color", new Vector3(1.0f, 1.0f, 1.0f));
         shader.end();
 
         blurTargetA = new FrameBuffer(RGBA8888, tex.getWidth(), tex.getHeight(), false);
@@ -119,19 +121,36 @@ public class OutlineScreen implements Screen {
         cam.update();
         cam2.update();
 
-        // setup H-blur
         batch.setShader(shader);
+        resizeBatch(tex.getWidth(), tex.getHeight());
+
+        // setup edgedetection
         shader.begin();
+        shader.setUniformi("edgedetect", 1);
+        shader.setUniformf("radius", 5f);
+        shader.end();
+
+        // draw from tex to FBO B
+        blurTargetB.begin();
+        batch.begin();
+        batch.draw(tex,0,0);
+        batch.end();
+        batch.flush();
+        blurTargetB.end();
+
+        // setup H-blur
+        shader.begin();
+        shader.setUniformi("edgedetect", 0);
         shader.setUniformf("dir", 1f, 0f);
         float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
         shader.setUniformf("radius", mouseXAmt * MAX_BLUR);
         shader.end();
 
-        // draw from tex to FBO A
-        resizeBatch(tex.getWidth(), tex.getHeight());
+        // draw from FBO B to FBO A
         blurTargetA.begin();
         batch.begin();
-        batch.draw(tex,0,0);
+        batch.draw(fboRegionB,0,0);
+//        batch.draw(tex,0,0);
         batch.end();
         batch.flush();
         blurTargetA.end();
@@ -160,70 +179,6 @@ public class OutlineScreen implements Screen {
         batch.begin();
         batch.draw(fboRegionB, 100, 100);
         batch.end();
-
-        // TODO: make orthoGestureController work with this code
-
-//        //Start rendering to an offscreen color buffer
-//        blurTargetA.begin();
-//
-//        //Clear the offscreen buffer with an opaque background
-//        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0f);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//
-//        //before rendering, ensure we are using the default shader
-//        batch.setShader(null);
-//
-//        //resize the batch projection matrix before drawing with it
-////        resizeBatch(FBO_SIZE, FBO_SIZE);
-//
-//        //now we can start drawing...
-//        batch.begin();
-//        batch.draw(tex, 0, 0); // render the texture without any blurring
-//        batch.flush();
-//        blurTargetA.end();
-//
-//        //now let's start blurring the offscreen image
-//        batch.setShader(shader);
-//
-//        //since we never called batch.end(), we should still be drawing
-//        //which means our blurShader should now be in use
-//
-//        //ensure the direction is along the X-axis only
-//        shader.setUniformf("dir", 1f, 0f);
-//
-//        //update blur amount based on touch input
-//        float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
-//        shader.setUniformf("radius", mouseXAmt * MAX_BLUR);
-//
-//        //our first blur pass goes to target B
-//        blurTargetB.begin();
-//        fboRegion.setTexture(blurTargetA.getColorBufferTexture());
-//        batch.draw(fboRegion, 0, 0); //draw the scene to target B with a horizontal blur effect
-//        batch.flush();
-//        blurTargetB.end();
-//
-//        //now we can render to the screen using the vertical blur shader
-//
-//        //update our projection matrix with the screen size
-////        resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        batch.setProjectionMatrix(cam.combined);
-//
-//        //update the blur only along Y-axis
-//        shader.setUniformf("dir", 0f, 1f);
-//
-//        //update the Y-axis blur radius
-//        float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
-//        shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
-//
-//        //draw target B to the screen with a vertical blur effect
-//        fboRegion.setTexture(blurTargetB.getColorBufferTexture());
-//        batch.draw(fboRegion, 0, 0);
-//
-//        //reset to default shader without blurs
-//        batch.setShader(null);
-//
-//        //finally, end the batch since we have reached the end of the frame
-//        batch.end();
 
         stage.draw();
     }
@@ -267,7 +222,8 @@ public class OutlineScreen implements Screen {
     @Override
     public void dispose() {
         tex.dispose();
-//        tex2.dispose();
+        blurTargetA.dispose();
+        blurTargetB.dispose();
         shader.dispose();
         batch.dispose();
         stage.dispose();
