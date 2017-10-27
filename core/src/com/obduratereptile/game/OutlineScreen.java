@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -32,7 +31,7 @@ public class OutlineScreen implements Screen {
     public ShaderProgram shader;
     public FrameBuffer blurTargetA, blurTargetB;
     public TextureRegion fboRegion;
-    public SpriteBatch batchL5;
+    public SpriteBatch batch;
 
     public static final int FBO_SIZE = 1024;
     public static final float MAX_BLUR = 2f;
@@ -87,7 +86,7 @@ public class OutlineScreen implements Screen {
             Gdx.app.error("debug", shader.getLog());
 
         //create our sprite batch
-        batchL5 = new SpriteBatch();
+        batch = new SpriteBatch();
 
         // Setup uniforms for our shader
         shader.begin();
@@ -118,8 +117,6 @@ public class OutlineScreen implements Screen {
 
         cam.update();
         cam2.update();
-        game.batch.setProjectionMatrix(cam.combined);
-//        batchL5.setProjectionMatrix(cam.combined);
 
 //        // The orthoGestureController works with this
 //        game.batch.begin();
@@ -129,17 +126,17 @@ public class OutlineScreen implements Screen {
         // debug: let's just draw to texture, then draw to the screen
         resizeBatch(tex.getWidth(), tex.getHeight());
         blurTargetA.begin();
-        batchL5.begin();
-        batchL5.draw(tex,0,0);
-        batchL5.end();
-        batchL5.flush();
+        batch.begin();
+        batch.draw(tex,0,0);
+        batch.end();
+        batch.flush();
         blurTargetA.end();
 
-        batchL5.setProjectionMatrix(cam.combined);
+        batch.setProjectionMatrix(cam.combined);
 
-        batchL5.begin();
-        batchL5.draw(tex, 100, 100);
-        batchL5.end();
+        batch.begin();
+        batch.draw(fboRegion, 100, 100);
+        batch.end();
 
         // TODO: make orthoGestureController work with this code
 
@@ -151,19 +148,19 @@ public class OutlineScreen implements Screen {
 //        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //
 //        //before rendering, ensure we are using the default shader
-//        batchL5.setShader(null);
+//        batch.setShader(null);
 //
 //        //resize the batch projection matrix before drawing with it
 ////        resizeBatch(FBO_SIZE, FBO_SIZE);
 //
 //        //now we can start drawing...
-//        batchL5.begin();
-//        batchL5.draw(tex, 0, 0); // render the texture without any blurring
-//        batchL5.flush();
+//        batch.begin();
+//        batch.draw(tex, 0, 0); // render the texture without any blurring
+//        batch.flush();
 //        blurTargetA.end();
 //
 //        //now let's start blurring the offscreen image
-//        batchL5.setShader(shader);
+//        batch.setShader(shader);
 //
 //        //since we never called batch.end(), we should still be drawing
 //        //which means our blurShader should now be in use
@@ -178,15 +175,15 @@ public class OutlineScreen implements Screen {
 //        //our first blur pass goes to target B
 //        blurTargetB.begin();
 //        fboRegion.setTexture(blurTargetA.getColorBufferTexture());
-//        batchL5.draw(fboRegion, 0, 0); //draw the scene to target B with a horizontal blur effect
-//        batchL5.flush();
+//        batch.draw(fboRegion, 0, 0); //draw the scene to target B with a horizontal blur effect
+//        batch.flush();
 //        blurTargetB.end();
 //
 //        //now we can render to the screen using the vertical blur shader
 //
 //        //update our projection matrix with the screen size
 ////        resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        batchL5.setProjectionMatrix(cam.combined);
+//        batch.setProjectionMatrix(cam.combined);
 //
 //        //update the blur only along Y-axis
 //        shader.setUniformf("dir", 0f, 1f);
@@ -197,13 +194,13 @@ public class OutlineScreen implements Screen {
 //
 //        //draw target B to the screen with a vertical blur effect
 //        fboRegion.setTexture(blurTargetB.getColorBufferTexture());
-//        batchL5.draw(fboRegion, 0, 0);
+//        batch.draw(fboRegion, 0, 0);
 //
 //        //reset to default shader without blurs
-//        batchL5.setShader(null);
+//        batch.setShader(null);
 //
 //        //finally, end the batch since we have reached the end of the frame
-//        batchL5.end();
+//        batch.end();
 
         stage.draw();
     }
@@ -224,7 +221,7 @@ public class OutlineScreen implements Screen {
     void resizeBatch(int width, int height) {
         worldWidth = cam.viewportWidth;
         cam2.setToOrtho(false, width, height);
-        batchL5.setProjectionMatrix(cam2.combined);
+        batch.setProjectionMatrix(cam2.combined);
     }
 
     void renderEntities(SpriteBatch batch) {
@@ -249,7 +246,7 @@ public class OutlineScreen implements Screen {
         tex.dispose();
 //        tex2.dispose();
         shader.dispose();
-        batchL5.dispose();
+        batch.dispose();
         stage.dispose();
     }
 }
