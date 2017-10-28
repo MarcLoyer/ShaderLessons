@@ -39,17 +39,25 @@ void main() {
             gl_FragColor = vec4(color.rgb, 1.0 - step(0.5, p.a));
         }
     } else {
-	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hblur*hstep, tc.y - 4.0*vblur*vstep)) * 0.05;
-	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hblur*hstep, tc.y - 3.0*vblur*vstep)) * 0.09;
-	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hblur*hstep, tc.y - 2.0*vblur*vstep)) * 0.12;
-	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hblur*hstep, tc.y - 1.0*vblur*vstep)) * 0.15;
+	    sum += texture2D(u_texture, vec2(tc.x - 7.0*hblur*hstep, tc.y - 7.0*vblur*vstep)) * 0.07;
+	    sum += texture2D(u_texture, vec2(tc.x - 6.0*hblur*hstep, tc.y - 6.0*vblur*vstep)) * 0.10;
+	    sum += texture2D(u_texture, vec2(tc.x - 5.0*hblur*hstep, tc.y - 5.0*vblur*vstep)) * 0.13;
+	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hblur*hstep, tc.y - 4.0*vblur*vstep)) * 0.16;
+	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hblur*hstep, tc.y - 3.0*vblur*vstep)) * 0.18;
+	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hblur*hstep, tc.y - 2.0*vblur*vstep)) * 0.19;
+	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hblur*hstep, tc.y - 1.0*vblur*vstep)) * 0.20;
 
-	    sum += texture2D(u_texture, vec2(tc.x, tc.y)) * 0.16;
+	    sum += texture2D(u_texture, vec2(tc.x, tc.y)) * 0.20;
 
-	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hblur*hstep, tc.y + 1.0*vblur*vstep)) * 0.15;
-	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hblur*hstep, tc.y + 2.0*vblur*vstep)) * 0.12;
-	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hblur*hstep, tc.y + 3.0*vblur*vstep)) * 0.09;
-	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hblur*hstep, tc.y + 4.0*vblur*vstep)) * 0.05;
+	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hblur*hstep, tc.y + 1.0*vblur*vstep)) * 0.20;
+	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hblur*hstep, tc.y + 2.0*vblur*vstep)) * 0.19;
+	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hblur*hstep, tc.y + 3.0*vblur*vstep)) * 0.18;
+	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hblur*hstep, tc.y + 4.0*vblur*vstep)) * 0.16;
+	    sum += texture2D(u_texture, vec2(tc.x + 5.0*hblur*hstep, tc.y + 5.0*vblur*vstep)) * 0.13;
+	    sum += texture2D(u_texture, vec2(tc.x + 6.0*hblur*hstep, tc.y + 6.0*vblur*vstep)) * 0.10;
+	    sum += texture2D(u_texture, vec2(tc.x + 7.0*hblur*hstep, tc.y + 7.0*vblur*vstep)) * 0.07;
+	    sum *= 1.8;
+//	    sum = clamp(sum, 0, 1);
 
     	gl_FragColor = vColor * vec4(sum.rgba);
     }

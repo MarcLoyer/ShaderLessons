@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -44,6 +45,7 @@ public class OutlineScreen implements Screen {
     public OrthographicCamera cam, cam2;
     public InputMultiplexer inputControllerMultiplexer;
     public Stage stage;
+    public Label status;
 
     public OutlineScreen(final ShaderLessons game) {
         this.game = game;
@@ -70,6 +72,10 @@ public class OutlineScreen implements Screen {
         });
         button.setPosition(ShaderLessons.SCREENSIZEX - 60, 10);
         stage.addActor(button);
+
+        status = new Label("", game.skin);
+        status.setPosition(10, 10);
+        stage.addActor(status);
 
         create();
     }
@@ -148,7 +154,7 @@ public class OutlineScreen implements Screen {
         // setup edgedetection
         shader.begin();
         shader.setUniformi("edgedetect", 1);
-        shader.setUniformf("radius", 5f);
+        shader.setUniformf("radius", 2f);
         shader.end();
 
         // draw from FBO A to FBO B
@@ -164,7 +170,7 @@ public class OutlineScreen implements Screen {
         // setup H-blur
         shader.begin();
         shader.setUniformi("edgedetect", 0);
-        shader.setUniformf("dir", 1f, 0f);
+        shader.setUniformf("dir", 0f, 1f);
         float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
         shader.setUniformf("radius", mouseXAmt * MAX_BLUR);
         shader.end();
@@ -181,7 +187,7 @@ public class OutlineScreen implements Screen {
 
         // setup V-blur
         shader.begin();
-        shader.setUniformf("dir", 0f, 1f);
+        shader.setUniformf("dir", 1f, 0f);
         float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
         shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
         shader.end();
@@ -222,6 +228,8 @@ public class OutlineScreen implements Screen {
 
         game.shapeRenderer.end();
 
+        // Optimal seems to be (1.10, 0.60)
+        status.setText("(" + (mouseXAmt * MAX_BLUR) + ", " + (mouseYAmt * MAX_BLUR) + ")");
         stage.draw();
     }
 
