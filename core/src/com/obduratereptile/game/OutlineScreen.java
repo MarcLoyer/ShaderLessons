@@ -46,6 +46,7 @@ public class OutlineScreen implements Screen {
     public InputMultiplexer inputControllerMultiplexer;
     public Stage stage;
     public Label status;
+    public Label fps;
 
     public OutlineScreen(final ShaderLessons game) {
         this.game = game;
@@ -76,6 +77,10 @@ public class OutlineScreen implements Screen {
         status = new Label("", game.skin);
         status.setPosition(10, 10);
         stage.addActor(status);
+
+        fps = new Label("0 fps", game.skin);
+        fps.setPosition(ShaderLessons.SCREENSIZEX - 200, 10);
+        stage.addActor(fps);
 
         create();
     }
@@ -228,9 +233,25 @@ public class OutlineScreen implements Screen {
 
         game.shapeRenderer.end();
 
+        float x = 1000.0f / delta;
+        fps.setText(" fps");
+
         // Optimal seems to be (1.10, 0.60)
         status.setText("(" + (mouseXAmt * MAX_BLUR) + ", " + (mouseYAmt * MAX_BLUR) + ")");
+        setFPS(delta);
         stage.draw();
+    }
+
+    StringBuilder fpsString = new StringBuilder();
+
+    public void setFPS(float delta) {
+        int i = (int)(100f / delta);
+        float x = (float)i / 100f;
+
+        fpsString.setLength(0);
+        fpsString.append(x);
+        fpsString.append(" fps");
+        fps.setText(fpsString);
     }
 
     public float worldWidth = 1000;
