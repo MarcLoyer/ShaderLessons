@@ -40,6 +40,11 @@ public class OutlineScreen implements Screen {
     public static final float MAX_BLUR = 2f;
     public static final int PAD = 10;
 
+    public boolean doBlur2D = false;
+    public int edgeDetectWidth = 1;
+    public float blurX = 1.1f;
+    public float blurY = 0.6f;
+
     public Rectangle rect = new Rectangle();
 
     public OrthographicCamera cam, cam2;
@@ -172,7 +177,7 @@ public class OutlineScreen implements Screen {
         batch.flush();
         blurTargetB.end();
 
-        // setup H-blur
+        // setup H-blur / 2D blur
         shader.begin();
         shader.setUniformi("edgedetect", 0);
         shader.setUniformf("dir", 0f, 1f);
@@ -190,22 +195,22 @@ public class OutlineScreen implements Screen {
         batch.flush();
         blurTargetA.end();
 
-        // setup V-blur
-        shader.begin();
-        shader.setUniformf("dir", 1f, 0f);
-        float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
-        shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
-        shader.end();
-
-        // draw from FBO A to FBO B
-        blurTargetB.begin();
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(fboRegionA,0,0);
-        batch.end();
-        batch.flush();
-        blurTargetB.end();
+//        // setup V-blur
+//        shader.begin();
+//        shader.setUniformf("dir", 1f, 0f);
+//        float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
+//        shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
+//        shader.end();
+//
+//        // draw from FBO A to FBO B
+//        blurTargetB.begin();
+//        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        batch.begin();
+//        batch.draw(fboRegionA,0,0);
+//        batch.end();
+//        batch.flush();
+//        blurTargetB.end();
 
         // use the default shader
         batch.setShader(null);
@@ -214,7 +219,8 @@ public class OutlineScreen implements Screen {
         batch.setProjectionMatrix(cam.combined);
 
         batch.begin();
-        batch.draw(fboRegionB, 100, 100);
+//        batch.draw(fboRegionB, 100, 100);
+        batch.draw(fboRegionA, 100, 100);
         batch.end();
 
         game.shapeRenderer.setProjectionMatrix(cam.combined);
@@ -236,8 +242,9 @@ public class OutlineScreen implements Screen {
         float x = 1000.0f / delta;
         fps.setText(" fps");
 
-        // Optimal seems to be (1.10, 0.60)
-        status.setText("(" + (mouseXAmt * MAX_BLUR) + ", " + (mouseYAmt * MAX_BLUR) + ")");
+        // Optimal seems to be (1.10, 0.60) (for 2 pass 1D filter)
+//        status.setText("(" + (mouseXAmt * MAX_BLUR) + ", " + (mouseYAmt * MAX_BLUR) + ")");
+        status.setText("" + (mouseXAmt * MAX_BLUR));
         setFPS(delta);
         stage.draw();
     }

@@ -126,6 +126,23 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: btnredtext
 		down: btnpressedredtext
 	}
+	checked: {
+		font: medium
+		fontColor: white
+		downFontColor: grey
+		checkedFontColor: grey
+		up: btnredtext
+		down: btnpressedredtext
+		checked: btnpressedredtext
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: {
+		font: medium
+		fontColor: black
+		messageFont: medium
+		messageFontColor: black
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	default: {
