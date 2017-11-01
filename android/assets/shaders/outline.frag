@@ -76,96 +76,32 @@ void main() {
 //	    sum *= 1.5;
 	    
 	    // 2-D Gaussian filter (we ignore any coeff less than 0.01)
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y - 4.0*vstep)) * 0.000000;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y - 4.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y - 4.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y - 4.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x,             tc.y - 4.0*vstep)) * 0.000088;
-//	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y - 4.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y - 4.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y - 4.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y - 4.0*vstep)) * 0.000000;
-
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y - 3.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y - 3.0*vstep)) * 0.000036;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y - 3.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y - 3.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x,             tc.y - 3.0*vstep)) * 0.002289;
-//	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y - 3.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y - 3.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y - 3.0*vstep)) * 0.000036;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y - 3.0*vstep)) * 0.000001;
-
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y - 2.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y - 2.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y - 2.0*vstep)) * 0.003672;
 	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y - 2.0*vstep)) * 0.014648;
 	    sum += texture2D(u_texture, vec2(tc.x,             tc.y - 2.0*vstep)) * 0.023205;
 	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y - 2.0*vstep)) * 0.014648;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y - 2.0*vstep)) * 0.003672;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y - 2.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y - 2.0*vstep)) * 0.000014;
 
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y - 1.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y - 1.0*vstep)) * 0.001445;
 	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y - 1.0*vstep)) * 0.014648;
 	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y - 1.0*vstep)) * 0.058434;
 	    sum += texture2D(u_texture, vec2(tc.x,             tc.y - 1.0*vstep)) * 0.092566;
 	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y - 1.0*vstep)) * 0.058434;
 	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y - 1.0*vstep)) * 0.014648;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y - 1.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y - 1.0*vstep)) * 0.000055;
 
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y            )) * 0.000088;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y            )) * 0.002289;
 	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y            )) * 0.023205;
 	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y            )) * 0.092566;
 	    sum += texture2D(u_texture, vec2(tc.x,             tc.y            )) * 0.146634;
 	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y            )) * 0.092566;
 	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y            )) * 0.023205;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y            )) * 0.002289;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y            )) * 0.000088;
 
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y + 1.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y + 1.0*vstep)) * 0.001445;
 	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y + 1.0*vstep)) * 0.014648;
 	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y + 1.0*vstep)) * 0.058434;
 	    sum += texture2D(u_texture, vec2(tc.x,             tc.y + 1.0*vstep)) * 0.092566;
 	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y + 1.0*vstep)) * 0.058434;
 	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y + 1.0*vstep)) * 0.014648;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y + 1.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y + 1.0*vstep)) * 0.000055;
 
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y + 2.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y + 2.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y + 2.0*vstep)) * 0.003672;
 	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y + 2.0*vstep)) * 0.014648;
 	    sum += texture2D(u_texture, vec2(tc.x,             tc.y + 2.0*vstep)) * 0.023205;
 	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y + 2.0*vstep)) * 0.014648;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y + 2.0*vstep)) * 0.003672;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y + 2.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y + 2.0*vstep)) * 0.000014;
-
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y + 3.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y + 3.0*vstep)) * 0.000036;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y + 3.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y + 3.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x,             tc.y + 3.0*vstep)) * 0.002289;
-//	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y + 3.0*vstep)) * 0.001445;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y + 3.0*vstep)) * 0.000362;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y + 3.0*vstep)) * 0.000036;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y + 3.0*vstep)) * 0.000001;
-
-//	    sum += texture2D(u_texture, vec2(tc.x - 4.0*hstep, tc.y + 4.0*vstep)) * 0.000000;
-//	    sum += texture2D(u_texture, vec2(tc.x - 3.0*hstep, tc.y + 4.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x - 2.0*hstep, tc.y + 4.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x - 1.0*hstep, tc.y + 4.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x,             tc.y + 4.0*vstep)) * 0.000088;
-//	    sum += texture2D(u_texture, vec2(tc.x + 1.0*hstep, tc.y + 4.0*vstep)) * 0.000055;
-//	    sum += texture2D(u_texture, vec2(tc.x + 2.0*hstep, tc.y + 4.0*vstep)) * 0.000014;
-//	    sum += texture2D(u_texture, vec2(tc.x + 3.0*hstep, tc.y + 4.0*vstep)) * 0.000001;
-//	    sum += texture2D(u_texture, vec2(tc.x + 4.0*hstep, tc.y + 4.0*vstep)) * 0.000000;
-	    sum *= 2.3;
+	    sum *= 4.0;
 
     	gl_FragColor = vColor * vec4(sum.rgba);
     }

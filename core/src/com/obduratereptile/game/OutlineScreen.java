@@ -179,8 +179,9 @@ public class OutlineScreen implements Screen {
 
         // setup H-blur / 2D blur
         shader.begin();
-        shader.setUniformi("edgedetect", 0);
-        shader.setUniformf("dir", 0f, 1f);
+        shader.setUniformi("edgedetect", 0); // turn off edge detection
+//        shader.setUniformf("dir", 0f, 1f);
+        shader.setUniformf("dir", 1f, 1f);
         float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
         shader.setUniformf("radius", mouseXAmt * MAX_BLUR);
         shader.end();
@@ -198,6 +199,7 @@ public class OutlineScreen implements Screen {
 //        // setup V-blur
 //        shader.begin();
 //        shader.setUniformf("dir", 1f, 0f);
+//        shader.setUniformi("edgedetect", 0); // turn off edge detection
 //        float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
 //        shader.setUniformf("radius", mouseYAmt * MAX_BLUR);
 //        shader.end();
