@@ -94,7 +94,9 @@ public class OutlineScreen implements Screen {
     public int bufferHeight;
 
     public void create() {
-        tex = new Texture(Gdx.files.internal("images/testImage.png"));
+//        tex = new Texture(Gdx.files.internal("images/testImage.png"));
+        tex = new Texture(Gdx.files.internal("images/piece_00.png"));
+//        tex = new Texture(Gdx.files.internal("images/piece_11.png"));
         tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         Gdx.app.error("debug", "Image size = (" + tex.getWidth() + ", " + tex.getHeight() + ")");
         bufferWidth = tex.getWidth() + 2*PAD;
